@@ -1,0 +1,145 @@
+*{
+	margin:0px;
+	padding:0px;
+	font-family: 'helvetica','微软雅黑';
+}
+
+body{
+	padding:30px 20px 20px 20px;
+	overflow-y:hidden;
+	overflow-x:auto;
+}
+
+.close{
+	float: right;
+	font-size: 21px;
+	font-weight: 700;
+	line-height: 1;
+	color: #000;
+	text-shadow: 0 1px 0 #fff;
+	filter: alpha(opacity=20);
+	opacity: .2;
+	text-decoration: none;
+}
+.close:hover{
+	filter: alpha(opacity=50);
+	opacity: .5;
+}
+
+.site-wrap{
+	display:block;
+	height:100%;
+	overflow: auto;
+	text-align:center;
+	box-sizing:border-box;
+	-webkit-transition:all 0.5s ease-in-out 0s;
+	-o-transition:all 0.5s ease-in-out 0s;
+	-moz-transition:all 0.5s ease-in-out 0s;
+	transition:all 0.5s ease-in-out 0s;
+}
+
+.site-wrap>div{
+	display:inline-block;
+	vertical-align: top;
+	border:1px solid #eee;
+	background-color: #fff;
+	height:100%;
+	min-width: 50px;
+	position:relative;
+	overflow:auto;
+	margin-left:-5px;
+	text-align:left;
+	box-sizing:border-box;
+	-webkit-transition:all 0.5s ease-in-out 0s;
+	-o-transition:all 0.5s ease-in-out 0s;
+	-moz-transition:all 0.5s ease-in-out 0s;
+	transition:all 0.5s ease-in-out 0s;
+	box-sizing:border-box;
+}
+.site-wrap>div>.content{
+	width:100%;
+	height:100%;
+	position:relative;
+	box-sizing:border-box;
+}
+.site-wrap>div.folded{
+	box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+}
+.folder-wrap{
+	width:20%;
+	z-index:4;
+}
+.file-wrap{
+	width:20%;
+	z-index:3;
+}
+.textarea-wrap{
+	width:40%;
+	z-index:2;
+	overflow: hidden!important;
+}
+.render-area{
+	width:40%;
+	z-index:1;
+}
+#edit-area{
+	width:100%;
+	height:100%;
+	outline:0;
+	resize:none;
+	border:none;
+	padding:10px 10px 20px 10px;
+	box-sizing:border-box;
+}
+
+
+.textarea-wrap .title-wrap{
+	position:absolute;
+	left:0px;
+	top:0px;
+	width:100%;
+	padding:0px 100px 0px 50px;
+	box-sizing:border-box;
+	line-height: 25px;
+	height:25px;
+	border-bottom:1px solid #eee;
+	overflow:hidden;
+}
+.textarea-wrap>.content,.render-area>.content{
+	padding-top:25px;
+}
+.textarea-wrap .title-wrap:before{
+	content:"Title:";
+	color:#999;
+	position:absolute;
+	left:5px;
+	top:0px;
+}
+.textarea-wrap .title-wrap input{
+	border:none;
+	width:100%;
+	outline:0px;
+	line-height: 25px;
+}
+.textarea-wrap .title-wrap .operations-group{
+	position: absolute;
+	top:0px;
+	right:0px;
+	display: inline-block;
+}
+.textarea-wrap .render-btn{
+	line-height: 22px;
+	color:#fff;
+	background-color:#000;
+	border-radius:2px;
+	padding:0px 10px;
+	border:none;
+	margin:1px 0px;
+}
+.textarea-wrap .close{
+	margin: 0px 5px 0px 10px;
+}
+
+
+
+
