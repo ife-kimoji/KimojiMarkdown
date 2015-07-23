@@ -1,5 +1,4 @@
 # KimojiMarkdown
----------
 Markdown editor developed by team Kimoji
 
 ###Team member
