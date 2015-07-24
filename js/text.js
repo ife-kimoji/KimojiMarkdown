@@ -71,10 +71,14 @@ $(function(){
 		fillEditPanelAndRenderArea : function(text){
 			//fill the panel
 			$('#edit-area').val(text);
-			$('#markdown').html(config.md.render(text));
+			this.renderMarkdown();
 
 			//show the render-panel at least,the user want to checkout the document at most time
 			this.togglePanel('render-area',true);
+		},
+
+		renderMarkdown : function(){
+			$('#markdown').html(config.md.render($('#edit-area').val()));
 		},
 
 
@@ -86,6 +90,21 @@ $(function(){
 		init : function(){
 			this.editAreaEvent();
 			this.togglePanel();
+			this.folderPanel();
+		},
+
+		folderPanel : function(){
+			$(document).on('click','.folder-wrap dt',function(){
+				var dt = $(this),
+					parent = dt.parent();
+				if(parent.is('active'))
+					return false;
+				parent.addClass('active').siblings().each(function(){
+					var that = $(this);
+					that.removeClass('active').find('dd').slideUp();
+				})
+				parent.find('dd').slideDown();
+			});
 		},
 
 		editAreaEvent : function(){
@@ -93,9 +112,9 @@ $(function(){
 				textBreakInterval,
 				displayArea = $('#markdown');
 
-			function textBreak(){
-				displayArea.html(config.md.render(editArea.val()));
-			}
+			// function textBreak(){
+			// 	displayArea.html(config.md.render(editArea.val()));
+			// }
 
 			$(document).on('click','.auto-render-btn',function(){
 				var that = $(this);
@@ -107,19 +126,19 @@ $(function(){
 				else{
 					that.addClass('active');
 
-					textBreak();
+					render.renderMarkdown();
 					render.togglePanel('render-area',true);
 
 					//auto render the document
 					editArea.keyup(function(){
 						clearTimeout(textBreakInterval);
-						textBreakInterval = setTimeout(textBreak,500);
+						textBreakInterval = setTimeout(render.renderMarkdown,500);
 					});
 				}
 			});
 
 			$(document).on('click','.render-btn',function(){
-				textBreak();
+				render.renderMarkdown();
 				render.togglePanel('render-area',true);
 			});
 		},
