@@ -69,17 +69,29 @@ nav .brand{
 }
 
 
-.panel>.toggle-panel-btn{
+.panel>.toggle-panel-btn,.new-file-btn,.new-folder-btn{
 	position: absolute;
 	left:-15px;
 	margin-left:50%;
-	top:15px;
 	width:30px;
 	height:30px;
 	border-radius:20px;
 	border:2px solid #fff;
 	color:#fff;
 	text-decoration: none;
+}
+.panel>.toggle-panel-btn{
+	top:15px;
+}
+.new-file-btn,.new-folder-btn{
+	bottom:15px;
+}
+.folded .new-file-btn,.folded .new-folder-btn{
+	display: none;
+}
+.new-file-btn:before,.new-folder-btn:before{
+	content:"+";
+	font-size:22px;
 }
 .panel>.toggle-panel-btn:before{
 	content:"<";
@@ -123,7 +135,7 @@ nav .brand{
 
 
 .folder-wrap,.file-wrap{
-	padding:50px 0px 20px 0px;
+	padding:70px 0px;
 	box-sizing:border-box;
 }
 .folder-wrap{
@@ -161,12 +173,14 @@ nav .brand{
 }
 
 
+
+
 .textarea-wrap .title-wrap{
 	position:absolute;
 	left:0px;
 	top:0px;
 	width:100%;
-	padding:0px 140px 0px 50px;
+	padding:0px 30px 0px 50px;
 	box-sizing:border-box;
 	line-height: 25px;
 	height:25px;
@@ -189,43 +203,44 @@ nav .brand{
 	outline:0px;
 	line-height: 25px;
 }
-.textarea-wrap .title-wrap .operations-wrap{
-	position: absolute;
-	top:0px;
-	right:0px;
-	display: inline-block;
+.operations-wrap{
+	position: fixed;
+	right:20px;
+	top:9px;
 }
-.textarea-wrap .auto-render-btn,.textarea-wrap .render-btn{
+.operations-wrap button{
 	line-height: 22px;
 	color:#fff;
 	border-radius:2px;
 	padding:0px 10px;
 	border:none;
-	position:relative;
-	top:-1px;
 	cursor:pointer;
 	outline:0px;
+	margin-left:10px;
 }
-.textarea-wrap .auto-render-btn{
+.operations-wrap .save-btn{
+	background-color: #367BB4;
+}
+.operations-wrap .auto-render-btn{
 	background-color: #ccc
 }
-.textarea-wrap .auto-render-btn.active{
+.operations-wrap .auto-render-btn.active{
 	background-color:#2CC24A;
-	margin-top:2px;
 }
-.textarea-wrap .auto-render-btn.active + .render-btn{
+.operations-wrap .auto-render-btn.active + .render-btn{
 	display:none;
 }
-.textarea-wrap .render-btn{
-	background-color:#000;
+.operations-wrap .render-btn{
+	background-color:#FF2700;
 }
 .textarea-wrap .close{
-	margin: 0px 5px 0px 10px;
+	position:absolute;
+	top:1px;
+	right:6px;
 }
 
 
 .render-area>.content{
-	padding:20px 10px;
 	box-sizing:border-box;
 	overflow:hidden;
 }
