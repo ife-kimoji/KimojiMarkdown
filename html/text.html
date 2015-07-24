@@ -10,16 +10,29 @@
 </head>
 <body>
 
+<nav>
+	<span class="brand">KimojiMarkdown</span>
+</nav>
+
 <div class="site-wrap">
-	<div class="folder-wrap folded"></div>
+	<div class="panel folder-wrap folded" name="folder-wrap">
+		<a href="javascript:void(0);" class="toggle-panel-btn"></a>
+		<div class="content"></div>
+	</div>
 
-	<div class="file-wrap folded"></div>
+	<div class="panel file-wrap folded" name="file-wrap">
+		<a href="javascript:void(0);" class="toggle-panel-btn"></a>
+		<div class="content"></div>
+	</div>
 
-	<div class="textarea-wrap">
+	<div class="panel textarea-wrap" name="textarea-wrap">
+		<a href="javascript:void(0);" class="toggle-panel-btn"></a>
 		<div class="content">
 			<div class="title-wrap">
 				<input type="text" name="title"/>
-				<div class="operations-group">
+				<div class="operations-wrap">
+
+					<button class="auto-render-btn" title="Auto Render">AR</button>
 					<button class="render-btn">Render</button>
 
 					<a href="javascript:void(0)" class="close">&times;</a>
@@ -29,7 +42,13 @@
 		</div>
 	</div>
 
-	<div class="render-area"></div>
+	<div class="panel render-area" name="render-area">
+		<a href="javascript:void(0);" class="toggle-panel-btn"></a>
+		<div class="content">
+			<a href="javascript:void(0)" class="close">&times;</a>
+			<div id="markdown"></div>
+		</div>
+	</div>
 </div>
 
 

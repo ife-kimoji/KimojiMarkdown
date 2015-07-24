@@ -5,6 +5,9 @@ $(function(){
 		config.init();
 		render.init();
 
+		//exposure interface
+		Render = render;
+
 	},
 
 	asyn = {
@@ -29,7 +32,12 @@ $(function(){
 		togglePanel : function(panelName,isVisible){
 			var ww = window.innerWidth,
 				ratio,
-				panel = $('.site-wrap .' + panelName);
+				panel = $('.site-wrap .' + panelName),
+				currentState = panel.is('.folded');
+
+			//if the panel has been visible/invisible,return
+			// if((currentState && !isVisible) || (!currentState && isVisible))
+			// 	return;
 
 			isVisible?panel.removeClass('folded'):panel.addClass('folded');
 			this.fixedPanelWidth();
@@ -45,7 +53,6 @@ $(function(){
 		fixedPanelWidth : function(){
 			var w = ctrl.getW(),
 				wrap = $('.site-wrap');
-			console.log(w);
 			if(w<8){
 				//small
 				wrap.css('width','100%');
@@ -61,28 +68,84 @@ $(function(){
 		},
 
 
+		fillEditPanelAndRenderArea : function(text){
+			//fill the panel
+			$('#edit-area').val(text);
+			$('#markdown').html(config.md.render(text));
+
+			//show the render-panel at least,the user want to checkout the document at most time
+			this.togglePanel('render-area',true);
+		},
+
+
 
 
 	},
 
 	bindEvent = {
 		init : function(){
-			//this.editAreaEvent();
+			this.editAreaEvent();
+			this.togglePanel();
 		},
 
 		editAreaEvent : function(){
-			var currentText,
-				editArea = $('#edit-area'),
-				textBreakInterval;
+			var editArea = $('#edit-area'),
+				textBreakInterval,
+				displayArea = $('#markdown');
 
 			function textBreak(){
-				$('#renderArea').html(config.md.render(editArea.val()));
+				displayArea.html(config.md.render(editArea.val()));
 			}
 
-			editArea.keyup(function(){
-				clearTimeout(textBreakInterval);
-				textBreakInterval = setTimeout(textBreak,500);
-			})
+			$(document).on('click','.auto-render-btn',function(){
+				var that = $(this);
+				if(that.is('.active')){
+					that.removeClass('active');
+					//unbind auto render
+					editArea.unbind('keyup');
+				}
+				else{
+					that.addClass('active');
+
+					textBreak();
+					render.togglePanel('render-area',true);
+
+					//auto render the document
+					editArea.keyup(function(){
+						clearTimeout(textBreakInterval);
+						textBreakInterval = setTimeout(textBreak,500);
+					});
+				}
+			});
+
+			$(document).on('click','.render-btn',function(){
+				textBreak();
+				render.togglePanel('render-area',true);
+			});
+		},
+
+		togglePanel : function(){
+			$(document).on('click','.toggle-panel-btn',function(){
+				var panel = $(this).parents('.panel'),
+					name = panel.attr('name'),
+					isVisible;
+				if(panel.is('.folded')){
+					panel.removeClass('folded');
+					isVisible = true;
+				}
+				else{
+					panel.addClass('folded');
+					isVisible = false;
+				}
+				render.togglePanel(name,isVisible);
+			});
+
+			$(document).on('click','.panel .close',function(){
+				var panel = $(this).parents('.panel'),
+					name = panel.attr('name');
+					panel.addClass('folded');
+					render.togglePanel(name,false);
+			});
 		},
 
 
@@ -109,6 +172,8 @@ $(function(){
 	},
 
 	config = {
+
+		togglePanelAnimateSpeed : 500,
 
 		md : null,
 
@@ -153,10 +218,6 @@ $(function(){
 
 
 	};
-
-
-
-	console.log(render);
 
 	init();
 
