@@ -114,6 +114,8 @@ nav .brand{
 }
 .panel.folded{
 	box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+	-moz-box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+	-webkit-box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
 	overflow:hidden;
 }
 
