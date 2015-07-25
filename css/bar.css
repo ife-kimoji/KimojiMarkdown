@@ -20,6 +20,9 @@ dt{
 	font-size:14px;
 	padding:5px 10px;
 }
+dl.active dt{
+	background: #e85134;
+}
 dd{
 	line-height: 25px;
 	font-size:13px;
@@ -45,12 +48,23 @@ dl .count{
 	color:#fff;
 }
 .file-item{
-	padding:10px 10px;
 	margin:5px 0px;
 	position: relative;
 	cursor:pointer;
+	overflow: hidden;
+	height:107px;
 }
-.file-item.active,.file-item:hover{
+.file-item .content-wrap{
+	padding:10px 10px;
+	cursor: inherit;
+	position:absolute;
+	top:0px;
+	left:0px;
+	background-color: #E85134;
+	max-width: 100%;
+	min-height:100%;
+}
+.file-item .content-wrap.active,.file-item .content-wrap:hover{
 	background-color: #E83B1A;
 }
 /*.file-item:after{
@@ -77,9 +91,21 @@ dl .count{
 	word-break:break-word;
 	color:#efefef;
 }
-
-
-
-dd.selected{
-	background: #e85134;
+.file-item .delete-btn{
+  display: inline-block;
+  height: 100%;
+  width: 60px;
+  background-color: red;
+  text-align: center;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  font-size: 15px;
+  line-height: 105px;
 }
+
+
+
+/*dd.selected{
+	background: #e85134;
+}*/

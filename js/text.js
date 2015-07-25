@@ -91,20 +91,71 @@ $(function(){
 			this.editAreaEvent();
 			this.togglePanel();
 			this.folderPanel();
+			this.deleteEvent();
+		},
+
+		deleteEvent : function(){
+			var isMouseDown = false,
+				originX,
+				item,
+				direction;
+			$(document).on('mousedown','.file-item',function(e){
+				isMouseDown = true;
+				originX = e.offsetX;
+				item = $(this).find('.content-wrap');
+				//console.log(item);
+			});
+
+			$(document).on('selectstart','.file-item',function(){
+				return false;
+			});
+
+			$(document).on('mousemove',function(e){
+				if(!isMouseDown)
+					return false;
+				var offsetX = item.position().left,
+					dx = e.offsetX - originX,//鼠标移动偏移值
+					left = offsetX + dx;
+				direction = dx>0?1:-1;
+				if(left>0)
+					left = 0;
+				if(left<-80)
+					left = -80;
+				//console.log(left);
+				item.css('left',left);
+			});
+
+			$(document).on('mouseup',function(){
+				isMouseDown = false;
+				if(item === undefined)
+					return false;
+				if(direction === 1){
+					item.animate({'left':0});
+				}
+				else{
+					item.animate({'left':-80});
+				}
+			})
 		},
 
 		folderPanel : function(){
-			$(document).on('click','.folder-wrap dt',function(){
-				var dt = $(this),
-					parent = dt.parent();
-				if(parent.is('active'))
-					return false;
-				parent.addClass('active').siblings().each(function(){
-					var that = $(this);
-					that.removeClass('active').find('dd').slideUp();
-				})
-				parent.find('dd').slideDown();
+			// $(document).on('click','.folder-wrap dt',function(){
+			// 	var dt = $(this),
+			// 		parent = dt.parent();
+			// 	if(parent.is('active'))
+			// 		return false;
+			// 	parent.addClass('active').siblings().each(function(){
+			// 		var that = $(this);
+			// 		that.removeClass('active').find('dd').slideUp();
+			// 	})
+			// 	parent.find('dd').slideDown();
+			// });
+
+			$(document).on('click','.folder-wrap dl',function(){
+				var that = $(this);
+				that.addClass('active').siblings().removeClass('active');
 			});
+	
 		},
 
 		editAreaEvent : function(){
