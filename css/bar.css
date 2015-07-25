@@ -9,19 +9,21 @@ dl{
 	color:#fff;
 	cursor:pointer;
 }
-dt,dd{
+/*dt,dd{
 	padding:0px 10px;
-}
+}*/
 dl.active,dt:hover{
 	background-color: rgb(52, 113, 163);
 }
 dt{
 	line-height: 20px;
 	font-size:14px;
-	padding:5px 10px;
 }
-dl.active dt{
-	background: #e85134;
+.folder-wrap dt{
+	position:relative;
+	height:40px;
+	line-height: 40px;
+	overflow:hidden;
 }
 dd{
 	line-height: 25px;
@@ -40,6 +42,7 @@ dl .count{
 	background-color:#fff;
 	border-radius:20px;
 	line-height: 1;
+	margin-top: 11px;
 }
 .folder-wrap a,.file-wrap a{
 	color:#fff;
@@ -48,24 +51,35 @@ dl .count{
 	color:#fff;
 }
 .file-item{
-	margin:5px 0px;
+	margin-bottom:10px;
 	position: relative;
 	cursor:pointer;
 	overflow: hidden;
 	height:107px;
 }
-.file-item .content-wrap{
-	padding:10px 10px;
+.file-item .content-wrap,.folder-wrap .content-wrap{
 	cursor: inherit;
 	position:absolute;
 	top:0px;
 	left:0px;
-	background-color: #E85134;
 	max-width: 100%;
 	min-height:100%;
+	width:100%;
+	box-sizing:border-box;
 }
-.file-item .content-wrap.active,.file-item .content-wrap:hover{
+.file-item .content-wrap{
+	padding:10px 10px;
+	background-color: #E85134;
+}
+.file-item.active .content-wrap,.file-item .content-wrap:hover{
 	background-color: #E83B1A;
+}
+.folder-wrap .content-wrap{
+	padding:0px 10px;
+	background-color:#367BB4;
+}
+.folder-wrap dl.active .content-wrap{
+	background-color: #e85134;
 }
 /*.file-item:after{
 	content:"...";
@@ -91,17 +105,25 @@ dl .count{
 	word-break:break-word;
 	color:#efefef;
 }
-.file-item .delete-btn{
+.file-item .delete-btn,.folder-wrap .delete-btn{
   display: inline-block;
   height: 100%;
-  width: 60px;
   background-color: red;
   text-align: center;
   position: absolute;
   top: 0px;
   right: 0px;
-  font-size: 15px;
-  line-height: 105px;
+  
+}
+.file-item .delete-btn{
+	width: 60px;
+	font-size: 15px;
+  	line-height: 105px;
+}
+.folder-wrap .delete-btn{
+	width:40px;
+	font-size:13px;
+	line-height:40px;
 }
 
 

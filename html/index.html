@@ -25,63 +25,14 @@
 <div class="site-wrap">
 	<div class="panel folder-wrap folded" name="folder-wrap">
 		<a href="javascript:void(0);" class="toggle-panel-btn"></a>
-		<div class="content">
-			<dl>
-		  		<dt>设计<span class="count">44</span></dt>
-		  		<!-- <dd class="selected"><a href="#">ui<span>(566)</span></a></dd>
-		  		<dd><a href="#">海报</a></dd>
-		  		<dd><a href="#">网站</a></dd> -->
-		  	</dl>
-		  	<dl>
-		  		<dt>体育锻炼<span class="count">44</span></dt>
-		  		<!-- <dd><a href="#">足球</a></dd>
-		  		<dd><a href="#">篮球</a></dd> -->
-		  	</dl>
-		  	<dl>
-		  		<dt>html5<span class="count">44</span></dt>
-		  		<!-- <dd><a href="#">前景</a></dd> -->
-		  		
-		  	</dl>
-		  	<dl>
-		  		<dt>语文<span class="count">44</span></dt>
-		  		<!-- <dd><a href="#">诗歌</a></dd>
-		  		<dd><a href="#">议论文</a></dd> -->
-		  
-		  	</dl>
-		  	<dl>		  		
-		  		<dt>数学<span class="count">44</span></dt>
-		  		<!-- <dd><a href="#">高树</a></dd>
-		  		<dd><a href="#">概率论</a></dd>
-		  		<dd><a href="#">离散</a></dd> -->
-		  	</dl>
-		  	<dl>		  		
-		  		<dt>英语<span class="count">44</span></dt>
-		  		<!-- <dd><a href="#">口语</a></dd>
-		  		<dd><a href="#">听力</a></dd> -->
-		  	</dl>
-		</div>
+		<div class="content"></div>
 		<a href="javascript:void(0);" class="new-folder-btn"></a>
 	</div>
 
 	<div class="panel file-wrap folded" name="file-wrap">
 		<a href="javascript:void(0);" class="toggle-panel-btn"></a>
-		<div class="content">
-			<div class="file-item">
-				<a href="javascript:void(0);" class="delete-btn">删除</a>
-				<div class="content-wrap">
-					<div class="header">《javascript权威指南》</div>
-					<div class="digest">sdfsfsdfsfsdfsfsdfsdfsdgfdsdfsdfdsfsdfasdsdasxcvxcvdsadasdadasdasddasdsdfsfsdfsfsdfsfsdfsdfsdgfdsdfsdfdsfsdfasdsdasxcvxcvdsadasdadasdasddasd</div>
-				</div>
-			</div>
-			<div class="file-item">
-				<a href="javascript:void(0);" class="delete-btn">删除</a>
-				<div class="content-wrap">
-					<div class="header">《javascript权威指南》</div>
-					<div class="digest">sdfsfsdfsfsdfsfsdfsdfsdgfdsdfsdfdsfsdfasdsdasxcvxcvdsadasdadasdasddasdsdfsfsdfsfsdfsfsdfsdfsdgfdsdfsdfdsfsdfasdsdasxcvxcvdsadasdadasdasddasd</div>
-				</div>
-			</div>
-		</div>
-		<a href="javascript:void(0);" class="new-file-btn"></a>
+		<div class="content"></div>
+		<a href="javascript:void(0);" class="new-file-btn" disabled=true></a>
 	</div>
 
 	<div class="panel textarea-wrap" name="textarea-wrap">
@@ -91,94 +42,9 @@
 				<input type="text" name="title"/>		
 				<a href="javascript:void(0)" class="close">&times;</a>
 			</div>
-			<textarea id="edit-area">
-# KimojiMarkdown db.js 接口说明
------------
-- **db.js**封装了存取markdown编辑器的接口，使用的是```HTML5 indexedDB```
-- 接口封装在```DB```这个全局对象内，使用```DB.*()```方法调用
-- **data.js**为预存的数据，引入一次即可
-- 所有函数的返回值都至少包含```isSuccess```字段，标识此次操作是否成功,如果是查询操作并且成功的话返回的数据保存在```result```字段中，失败的信息保存在```message```字段中
-# 
-# 
-
-### open()
-> *开启数据库*
-> 在操作数据前需要先调用此方法（调用一次即可）
-
-# 
-### fetchAllFolder(callback)
-> *取回所有文件夹数据*
-> callback-回调函数
-
-# 
-### addNewFolder(fname,callback)
-> *增加新文件夹*
-> fname-文件夹名
-> callback-回调函数
-
-# 
-### removeFolderByFid(fid,callback)
-> *删除文件夹*
-> fid-文件夹id
-> callback-回调函数
-
-# 
-### updateFolderByFid(fid,fname,callback)
-> *更新文件夹信息*
-> fid-文件夹id
-> fname-文件夹名
-> callback-回调函数
-
-# 
-### fetchAllFilesByFid(fid,callback)
-> *取回文件夹下的文件*
-> fid-文件夹id
-> callback-回调函数
-
-# 
-### addNewFile(finame,content,fid,callback)
-> *增加新文件*
-> finame-文件名
-> content-文件内容
-> fid-所属文件夹id
-> callback-回调函数
-
-# 
-### removeFileByFiid(fiid,callback)
-> *删除文件*
-> fiid-文件id
-> callback-回调函数
-
-# 
-### updateFileByFiid(fiid,finame,content,fid,callback)
-> *更新文件*
-> fiid-文件id
-> finame-文件名
-> content-文件内容
-> fid-所属文件夹id
-> callback-回调函数
-
-# 
-### fetchFileByFiid(fiid,callback)
-> *取回文件内容*
-> fiid-文件id
-> callback-回调函数
-```javascript
-console.log('aaaa');
-//hhhh
-````
-![github](../img/minion.png)
-
-
-|name|age|
-|-----|-------|
-|dennis|22|
-|apple|33|
-
-
-
-			</textarea>
+			<textarea id="edit-area"></textarea>
 		</div>
+		<div class="mask"></div>
 	</div>
 
 	<div class="panel render-area" name="render-area">

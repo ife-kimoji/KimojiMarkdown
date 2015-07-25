@@ -17,6 +17,7 @@ nav{
 	background-color:#000;
 	color:#fff;
 	width:100%;
+	z-index:99;
 }
 nav .brand{
 	font-weight:500;
@@ -93,6 +94,10 @@ nav .brand{
 	content:"+";
 	font-size:22px;
 }
+.new-file-btn[disabled=true]{
+	border-color:#777;
+	color:#777;
+}
 .panel>.toggle-panel-btn:before{
 	content:"<";
 	line-height: 30px;
@@ -142,6 +147,7 @@ nav .brand{
 	width:20%;
 	z-index:4;
 	background-color: #367BB4;
+	margin-right:-1px;
 }
 .file-wrap{
 	width:20%;
@@ -197,6 +203,14 @@ nav .brand{
 	left:5px;
 	top:0px;
 }
+.textarea-wrap .mask{
+	position:absolute;
+	height:100%;
+	width:100%;
+	background-color: rgba(0,0,0,0.7);
+	left:0px;
+	top:0px;
+}
 .textarea-wrap .title-wrap input{
 	border:none;
 	width:100%;
@@ -237,6 +251,7 @@ nav .brand{
 	position:absolute;
 	top:1px;
 	right:6px;
+	z-index:3;
 }
 
 

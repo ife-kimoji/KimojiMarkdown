@@ -6,26 +6,32 @@ $(function(){
 
 		config : {
 			dbName : 'markdown',
-			dbVersion : 1.0,
+			dbVersion : 2.0,
 			table : {
 				folder : 'folder',
 				file : 'file',
 			},
 		},
 
-		initDB : function(){
+		initDB : function(callback){
 			var names = this.db.objectStoreNames;
 			if(!names.contains('folder')){
-				this.db.createObjectStore("folder", { keyPath : "fid" ,autoIncrement: true });
+				var request = this.db.createObjectStore("folder", { keyPath : "fid" ,autoIncrement: true });
+				request.onsuccess = function(event){
+					callback();
+				}
+			}
+			else{
+				callback();
 			}
 			if(!names.contains('file')){
 				var store = this.db.createObjectStore("file", { keyPath : "fiid" ,autoIncrement: true });
 				store.createIndex('fid', 'fid', { unique: false });
-
 			}
+			
 		},
 
-		open : function(){
+		open : function(callback){
 			var indexedDB = window.indexedDB || window.webkitIndexedDB || window.mozIndexDB,
 				request = indexedDB.open(this.config.dbName,this.config.dbVersion),
 				that = this;
@@ -36,13 +42,13 @@ $(function(){
 			request.onupgradeneeded = function(e){
 			    console.log("Upgrading");
 			    that.db = e.target.result;
-			    that.initDB();
+			    that.initDB(callback);
 			};
 
 			request.onsuccess = function(e){
 				db = e.target.result;
 				that.db = db;
-				that.initDB();
+				that.initDB(callback);
 			};
 		},
 
@@ -178,10 +184,30 @@ $(function(){
 				};
 			objectStore.add(file);
 			transaction.oncomplete = function(event) {
-			    var result = {
-			    	isSuccess : true,
-			    };
-			    callback(result);
+				var trans = db.transaction(["file"],"readwrite"),
+					objectStore = trans.objectStore("file"),
+					range = IDBKeyRange.only(fid),
+					request = objectStore.index('fid').openCursor(range,IDBCursor.NEXT_NO_DUPLICATE ),
+					max = -1;
+				request.onsuccess = function(event){
+					var cursor = event.target.result;
+					if(!cursor){
+						var result = {
+					    		isSuccess : true,
+					    		fiid : max,
+					   		};
+					    callback(result);
+					    return;
+					}
+					var fiid = cursor.value.fiid;
+					if(fiid > max)
+						max = fiid;
+					cursor.continue();
+				}
+
+				request.onerror = function(){
+					console.log('fetch fiid error');
+				}
 			};
 
 			transaction.onerror = function(event) {
