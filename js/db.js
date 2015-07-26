@@ -14,21 +14,50 @@ $(function(){
 		},
 
 		initDB : function(callback){
-			var names = this.db.objectStoreNames;
-			if(!names.contains('folder')){
-				var request = this.db.createObjectStore("folder", { keyPath : "fid" ,autoIncrement: true });
-				request.onsuccess = function(event){
-					callback();
-				}
-			}
-			else{
+			var names = this.db.objectStoreNames,
+				times = 0,
+				intervalHandler;
+			if(names.contains('folder') && names.contains('file')){
 				callback();
+				return;
+			}
+			if(!names.contains('folder')){
+				var folderReq = this.db.createObjectStore("folder", { keyPath : "fid" ,autoIncrement: true });
 			}
 			if(!names.contains('file')){
 				var store = this.db.createObjectStore("file", { keyPath : "fiid" ,autoIncrement: true });
 				store.createIndex('fid', 'fid', { unique: false });
 			}
-			
+			//轮询
+			intervalHandler = setInterval(function(){
+				var names = this.db.objectStoreNames;
+				if(names.contains('folder') && names.contains('file')){
+					clearInterval(intervalHandler);
+					initData(callback);
+				}
+				if(times++>50){
+					clearInterval(intervalHandler);
+					console.error('db init abort!');
+				}
+			},100);
+
+
+
+			function initData(callback){
+				DB.addNewFolder('Notes',function(data){
+					if(data.isSuccess){
+						var finame = 'Welcome to KimojiMarkdown!',
+							content = '# Hello World!',
+							fid = 1;
+						DB.addNewFile(finame,content,fid,function(data){
+							if(data.isSuccess)
+								callback();
+						})
+					}
+				});
+			}
+
+				
 		},
 
 		open : function(callback){
@@ -54,7 +83,7 @@ $(function(){
 
 		//取回所有文件夹
 		fetchAllFolder : function(callback){
-			var transaction = db.transaction(["folder"],"readwrite"),
+			var transaction = db.transaction(["folder","file"],"readwrite"),
 				objectStore = transaction.objectStore("folder"),
 				result = [],
 				request = objectStore.openCursor();
@@ -67,8 +96,23 @@ $(function(){
 			    	});
 			    	return;
 			    }
-		        result.push(cursor.value); 
-		        cursor.continue();  
+			    var folder = cursor.value,
+			    	fid = folder.fid,
+			    	count = 0,
+					fileStore = transaction.objectStore("file"),
+					range = IDBKeyRange.only(fid),
+					req = fileStore.index('fid').openCursor(range,IDBCursor.NEXT_NO_DUPLICATE);
+				req.onsuccess = function(event){
+					var cur = event.target.result;
+					if(!cur){
+						folder.count = count;
+						result.push(folder); 
+		        		cursor.continue(); 
+						return ;
+					}
+					count++;
+					cur.continue();
+				} 
 			};
 			request.onerror = function(event){
 				callback({
@@ -102,7 +146,7 @@ $(function(){
 
 		//根据文件夹id删除文件夹
 		removeFolderByFid : function(fid,callback){
-			var transaction = db.transaction(["folder"],"readwrite"),
+			var transaction = db.transaction(["folder","file"],"readwrite"),
 				objectStore = transaction.objectStore("folder");
 			objectStore.delete(fid);
 			transaction.oncomplete = function(event) {
@@ -110,6 +154,22 @@ $(function(){
 			    	isSuccess : true,
 			    };
 			    callback(result);
+			    var transaction = db.transaction(["file"],"readwrite")
+			    	fileStore = transaction.objectStore("file"),
+					range = IDBKeyRange.only(fid),
+					req = fileStore.index('fid').openCursor(range,IDBCursor.NEXT_NO_DUPLICATE);
+				req.onsuccess = function(event){
+					var cur = event.target.result;
+					if(!cur){
+						return ;
+					}
+					var fiid = cur.value.fiid;
+					DB.removeFileByFiid(fiid,function(data){
+						if(!data.isSuccess)
+							console.error(data.message);
+					});
+					cur.continue();
+				}
 			};
 
 			transaction.onerror = function(event) {
@@ -308,64 +368,5 @@ $(function(){
 
 
 	};
-
-
-	// DB.open = function(){
-	// 	var indexedDB = this.indexedDB,
-	// 		request = indexedDB.open(this.config.dbName,this.config.dbVersion),
-	// 		db;
-
-	// 	request.onerror = function(e){
-	// 	    console.log("打开DB失败", event);
-	// 	}
-	// 	request.onupgradeneeded   = function(e){
-	// 	    console.log("Upgrading");
-	// 	    db = e.target.result;
-	// 	    initDB();
-	// 	};
-
-	// 	request.onsuccess = function(e){
-	// 		db = e.target.result;
-	// 		indexedDB.db = db;
-	// 		insert();
-	// 	};
-
-	// 	function initDB(){
-	// 		var names = db.objectStoreNames;
-	// 		if(!names.contains('students')){
-	// 			var objectStore = db.createObjectStore("students", { keyPath : "rollNo" });
-	// 		}
-	// 	}
-
-	// 	function insert(){
-	// 		var transaction = db.transaction(["students"],"readwrite");
-	// 		transaction.oncomplete = function(event) {
-	// 		    console.log("Success");
-	// 		    fetch();
-	// 		};
-
-	// 		transaction.onerror = function(event) {
-	// 		    console.log("Error");
-	// 		};  
-	// 		// var objectStore = transaction.objectStore("students");
-
-	// 		// objectStore.add({rollNo: 3, age: 2});
-	// 	}
-		
-	// 	function fetch(){
-	// 		var store = db.transaction(["students"],"readwrite").objectStore("students");
-	// 		console.log(store);
-	// 		var request = store.get(3);
-	// 		//var request = db.transaction(["students"],"readwrite").objectStore("students").get(3);
-	// 		var request = store.get(3);
-	// 		request.onsuccess = function(event){
-	// 		    console.log("Name : "+request.result.age);    
-	// 		};
-	// 	}
-		
-
-
-	// }
-
 
 })

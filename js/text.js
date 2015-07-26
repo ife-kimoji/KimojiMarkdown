@@ -69,10 +69,21 @@ $(function(){
 
 		addNewFile : function(finame,content,fid,callback){
 			DB.addNewFile(finame,content,fid,callback);
+			ctrl.callback.updateFolderAfterNewFile(fid,true);
 		},
 
 		updateFileByFiid : function(fiid,finame,content,fid,callback){
 			DB.updateFileByFiid(fiid,finame,content,fid,callback);
+		},
+
+		removeFolderByFid : function(fid,callback){
+			DB.removeFolderByFid(fid,callback);
+		},
+
+		removeFileByFiid : function(fiid,callback){
+			DB.removeFileByFiid(fiid,callback);
+			var fid = $('.file-wrap').data('fid');
+			ctrl.callback.updateFolderAfterNewFile(fid,false);
 		},
 
 
@@ -92,7 +103,7 @@ $(function(){
 						  			'<div class="content-wrap"><span class="folder-name"></span><span class="count"></span></div>'+
 						  		'</dt></dl>');
 				item.find('.folder-name').html(data.fname);
-				item.find('.count').html('10');
+				item.find('.count').html(data.count);
 				item.data('externalMsg',data);
 				return item;
 			},
@@ -205,6 +216,13 @@ $(function(){
 			$('#edit-area').val('');
 		},
 
+		clearRenderArea : function(){
+			$('#markdown').html('');
+		},
+
+		clearFileWrap : function(){
+			$('.file-wrap .content').empty();
+		},
 
 	},
 
@@ -225,13 +243,26 @@ $(function(){
 				direction,
 				offset = config.file_delete_offset;
 			$(document).on('mousedown','.file-item',function(e){
+
+				var that = $(this);
+
+				//复位其他file-item的删除
+				that.siblings().each(function(){
+					var that = $(this),
+						slide = that.find('.content-wrap'),
+						left = slide.position().left;
+					if(left<0){
+						slide.animate({'left':0});
+					}
+				});
+
 				//防止单纯点击因为页面滚动出现删除按钮，但是如果是删除操作则这是一个错误的阻止
 				if($('.render-area').is('.folded'))
 					return false;
 
 				isMouseDown = true;
 				originX = e.offsetX;
-				item = $(this).find('.content-wrap');
+				item = that.find('.content-wrap');
 				////console.log(item);
 			});
 
@@ -271,13 +302,25 @@ $(function(){
 				offset = config.folder_delete_offset;
 			$(document).on('mousedown','.folder-wrap dl',function(e){
 
+				var that = $(this);
+
+				//复位其他folder-item的删除
+				that.siblings().each(function(){
+					var that = $(this),
+						slide = that.find('.content-wrap'),
+						left = slide.position().left;
+					if(left<0){
+						slide.animate({'left':0});
+					}
+				});
+
 				//防止单纯点击因为页面滚动出现删除按钮，但是如果是删除操作则这是一个错误的阻止
 				if($('.file-wrap').is('.folded'))
 					return false;
 
 				isMouseDown = true;
 				originX = e.offsetX;
-				item = $(this).find('.content-wrap');
+				item = that.find('.content-wrap');
 				////console.log(item);
 			});
 
@@ -332,9 +375,14 @@ $(function(){
 			// 	parent.find('dd').slideDown();
 			// });
 
-			$(document).on('click','.folder-wrap dl',function(){
+			$(document).on('click','.folder-wrap dl',function(e){
 				var that = $(this),
-					fid = that.data('externalMsg').fid;
+					fid = that.data('externalMsg').fid,
+					target = $(e.target);
+				if(target.is('.delete-btn')){
+					return;
+				}
+
 				that.addClass('active').siblings().removeClass('active');
 				asyn.fillFileWrap(fid);
 				ctrl.enableNewFileBtn(true);
@@ -343,29 +391,63 @@ $(function(){
 
 			$(document).on('click','.folder-wrap .new-folder-btn',function(){
 				var name = prompt('请输入新文件夹的名称：');
-				while(name === null || name.replace(/\s/g,'') === ''){
+				while(name !== null && name.replace(/\s/g,'') === ''){
 					alert('文件名不合法！')
 					name = prompt('请输入新文件夹的名称：');
 				}
-				if(name === undefined)
+				if(name === null)
 					return false;
 				asyn.addNewFolder(name);
-			})
+			});
+
+			$(document).on('click','.folder-wrap .delete-btn',function(){
+				var that = $(this).parents('dl'),
+					data = that.data('externalMsg'),
+					count = data.count,
+					fid = data.fid;
+				if(count > 0){
+					if(!confirm('该文件夹不为空，确定删除？')){
+						return false;
+					}
+				}
+				asyn.removeFolderByFid(fid,function(data){
+					if(data.isSuccess){
+						asyn.fillFolderWrap();
+						render.clearFileWrap();
+						render.clearTextareaWrap();
+						render.clearRenderArea();
+					}
+					else{
+						console.erorr(data.message);
+					}
+				});
+			});
 	
 		},
 
 		filePanel : function(){
 
-			$(document).on('click','.file-item',function(){
+			$(document).on('click','.file-item',function(e){
 				// var that = $(this),
 				// 	fiid = that.data('externalMsg').fiid;
 				// asyn.fetchFileByFiid(fiid);
 				var that = $(this),
-					data = $(this).data('externalMsg');
+					data = $(this).data('externalMsg'),
+					target = $(e.target);
+				if(target.is('.delete-btn')){
+					render.clearTextareaWrap();
+					render.clearRenderArea();
+					return;
+				}
+
+				//the first time to click the file-item
 				if($('file-item.active').length !== 0 && !that.is('.active'))
 					return false;
+
+				//the flowing two sentences can not be exchange 
 				ctrl.saveFile();
 				that.addClass('active').siblings().removeClass('active');
+
 				render.fillTextareaWrap(data);
 				render.renderMarkdown();
 				ctrl.enableTextArea(true);
@@ -378,6 +460,19 @@ $(function(){
 					return false;
 				ctrl.enableTextArea(true);
 				ctrl.saveFile();
+			});
+
+			$(document).on('click','.file-item .delete-btn',function(){
+				var that = $(this).parents('.file-item'),
+					fiid = that.data('externalMsg').fiid;
+				asyn.removeFileByFiid(fiid,function(data){
+					if(data.isSuccess){
+						that.remove();
+					}
+					else{
+						console.error(data.message);
+					}
+				})
 			});
 
 		},
@@ -463,7 +558,20 @@ $(function(){
 		},
 
 		callback : {
-
+			//在增加文件后在UI上更新对应文件夹下文件数目
+			updateFolderAfterNewFile : function(fid,add){
+				var folders = $('.folder-wrap dl');
+				for(var i  = 0,length = folders.length;i<length;i++){
+					var folder = folders.eq(i),
+						data = folder.data('externalMsg');
+					if(data.fid === fid){
+						add?data.count++:data.count--;
+						folder.data('externalMsg',data);
+						folder.find('.count').html(data.count);
+						return;
+					}
+				}
+			},
 		},
 
 		enableNewFileBtn : function(enable){
